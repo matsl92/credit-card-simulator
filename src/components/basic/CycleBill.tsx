@@ -1,7 +1,7 @@
 import { Paper, Typography, Stack, Box } from "@mui/material";
 
 export interface CycleBillInterface {
-    dueDate: Date,
+    dueDate: Date | string,
     interestsFromPrevDebt: number,
     cycleInterests: number,
     addressableAmount: number,
@@ -11,14 +11,18 @@ export interface CycleBillInterface {
 }
 
 function CycleBill({
-    dueDate,
+    // dueDate,
     interestsFromPrevDebt,
     cycleInterests,
     addressableAmount,
     minimumPayment,
     carriedOverBalance,
-    fullPayment
+    fullPayment,
+    ...rest
 }: CycleBillInterface) {
+    
+    let dueDate = rest.dueDate instanceof Date? rest.dueDate : new Date(rest.dueDate)
+    
     return (
         <Paper elevation={2} sx={{
             maxWidth: '400px',

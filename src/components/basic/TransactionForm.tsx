@@ -1,9 +1,9 @@
-import TransactionTypeInput from "./inputs/transactionFormInputs/TypeInput";
-import TransactionDateInput from "./inputs/transactionFormInputs/DateInput";
-import TransactionDescriptionInput from "./inputs/transactionFormInputs/DescriptionInput";
-import TransactionInstallmentsInput from "./inputs/transactionFormInputs/InstallmentsInput";
-import TransactionInterestRateInput from "./inputs/transactionFormInputs/InterestRateInput";
-import TransactionAmountInput from "./inputs/transactionFormInputs/AmountInput";
+import TransactionTypeInput from "@components/basic/inputs/TypeInput";
+import TransactionDateInput from "@components/basic/inputs/DateInput";
+import TransactionDescriptionInput from "@components/basic/inputs/DescriptionInput";
+import TransactionInstallmentsInput from "@components/basic/inputs/InstallmentsInput";
+import TransactionInterestRateInput from "@components/basic/inputs/InterestRateInput";
+import TransactionAmountInput from "@components/basic/inputs/AmountInput";
 
 export function TransactionForm() {
 

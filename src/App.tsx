@@ -7,43 +7,18 @@ import TransactionContainer from '@components/complex/TransactionContainer';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Divider } from '@mui/material';
+import { useAppSelector } from "@src/redux/hooks";
 
 
 function App() {
+
+	const transactions = useAppSelector(state => state.db.transactions);
 
 	return (
 		<LocalizationProvider dateAdapter={AdapterDayjs}>
 			<Container>
 				<TransactionContainer
-					transactions={[
-						{
-							date: new Date(),
-							type: 'purchase',
-							description: 'Some purchase',
-							installments: 24,
-							interestRate: 2.9559,
-							amount: 1500,
-							interestsToBePaid: 400000
-						},
-						{
-							date: new Date(),
-							type: 'purchase',
-							description: 'Some purchase That I cannnot quite remember',
-							installments: 24,
-							interestRate: 2.9559,
-							amount: 1500,
-							interestsToBePaid: 400000
-						},
-						{
-							date: new Date(),
-							type: 'purchase',
-							description: 'Some purchase That I cannnot quite remember',
-							installments: 24,
-							interestRate: 2.9559,
-							amount: 1500,
-							interestsToBePaid: 400000
-						},
-					]}/>
+					transactions={transactions}/>
 
 				<Divider sx={{marginY: '20px'}}></Divider>
 

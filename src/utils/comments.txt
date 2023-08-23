@@ -1,2 +1,150 @@
+TO DO
+
+Transaction container:
+
+	ADD button function:
+		-validate data
+		if valid data:
+			-fetch data
+			if valid request:
+				-close form container
+				-make sure that all inputs get back to their default values
+				-add new transaction to Transaction Container
+			else:
+				maybe display the error somewhere, but it would be better to ensure the 
+				request success by validating the data properly.
+		else:
+			display errors and keep input values
+
+		Note: every time a new transaction is added several containers will get another 
+		item
+
+General things I don't know where to put
+
+	The fucking function:
+		This madafaka starts by taking an array of transactions (maybe just the selected 
+		ones in our Transaction container instead of all of them)
+
+		Then, it must get all the values to be rendered and pass them to the corresponding
+		componenets
+
+		Values:
+
+			{
+				dicles: [
+					{
+						period: [cycleStart, cycleEnd],
+						transactions: [
+							transactionBalance1,
+							transactionBalance2
+						],
+						subTotal: SubtotalBar,
+						bill: {
+							dueDate: Date,
+							interestsFromPrevDebt: number,
+							cycleInterests: number,
+							addressableAmount: number,
+							minimumPayment: number,
+							carriedOverBalance: number,
+							fullPayment: number
+
+						}
+					},
+					{
+						period: [cycleStart, cycleEnd],
+						transactions: [
+							transactionBalance1,
+							transactionBalance2
+						],
+						subTotal: SubtotalBar,
+						bill: {
+							dueDate: Date,
+							interestsFromPrevDebt: number,
+							cycleInterests: number,
+							addressableAmount: number,
+							minimumPayment: number,
+							carriedOverBalance: number,
+							fullPayment: number
+
+						}
+					}
+				],
+				total: {
+					paidCapital: number,
+					paidInterests: number,
+					totalPaid: number
+				}
+			}
+	
+	getInterestsToPay(transaction):
+		this one will calculate the interests for a specific transaction.
+		divide amount by installments, itereate through each cycle and return
+		the insterests. the remainingCapital must be 0 at the end.
+
+		
+
+
+
 Transition group for appearing transaction form
 
+
+
+
+
+
+
+
+--------------------------------------- REDUX ---------------------------------------
+
+INSTALLATION
+
+npm init -y
+
+npm install @reduxjs/toolkit
+
+npm install react-redux
+
+
+SETUP
+
+public
+src
+	app
+		store.js
+	features
+		counter
+			counter.js
+			counterSlice.js
+			counterAPI.js
+		anotherStateFeature
+			thatThing.js
+			thatThingSlice.js
+
+
+CREATE A STORE
+
+Pass in an object with the reducer property to the configureStore function. This object 
+will contain all the values we want to be stored as property keys, and the value to each
+property will be the reducer function that will handel the changes of each value.
+
+
+export const store = configureStore({
+	reducer: {
+		counter: counterReducer,
+		nameInput: nameInputReducer
+	}
+})
+
+By doing so we will be able to use state.counter and state.nameInput.
+
+
+ACCESS DATA FROM THE STORE
+
+const inputValue = useSelector((state) => state.form.amount);
+
+
+ACCESS REDUCER
+
+const dispatch = useDispatch();
+
+dispatch(setAmount(e.target.value));

@@ -1,7 +1,8 @@
 import { Grid, Typography, Box } from '@mui/material';
 
 export interface TransactionInterface {
-    date: Date,
+    // date: Date,
+    date: Date | string,
     type: 'advance' | 'purchase' | 'payment' | 'other',
     description: string,
     installments: number,
@@ -11,14 +12,17 @@ export interface TransactionInterface {
 }
 
 function Transaction({
-    date,
     type,
     description,
     installments,
     interestRate,
     amount,
-    interestsToBePaid
+    interestsToBePaid,
+    ...rest
 }: TransactionInterface) {
+
+    let date = typeof rest.date === 'string' ? new Date(rest.date) : rest.date;
+
     return (
         <Grid container columns={16} sx={{
             width: '95%',

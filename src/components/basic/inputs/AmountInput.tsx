@@ -2,6 +2,8 @@ import * as React from 'react';
 import { NumericFormat, NumericFormatProps } from 'react-number-format';
 import TextField from '@mui/material/TextField';
 import { FormControl } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '@src/redux/hooks';
+import { setAmount } from '@src/redux/features/form/formSlice';
 
 interface CustomProps {
 	onChange: (event: { target: { name: string; value: string } }) => void;
@@ -37,15 +39,25 @@ interface State {
 }
 
 function TransactionAmountInput() {
+	const dispatch = useAppDispatch();
+	const amountFromRedux = useAppSelector((state) => state.form.amount); // Assuming the slice is named 'form'
+
 	const [values, setValues] = React.useState<State>({
-		numberformat: '',
+		numberformat: amountFromRedux.toString(), // Convert the number to a string
 	});
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const inputValue = event.target.value;
+
+		// Update local state
 		setValues({
 			...values,
-			[event.target.name]: event.target.value,
+			[event.target.name]: inputValue,
 		});
+
+		// Convert string input to a number and update Redux state
+		const numericValue = parseFloat(inputValue.replace(/[^0-9.-]+/g, '')); // Remove formatting characters
+		dispatch(setAmount(numericValue)); // Dispatch the action to update the Redux state
 	};
 
 	return (
@@ -60,7 +72,7 @@ function TransactionAmountInput() {
 					inputComponent: NumericFormatCustom as any,
 				}}
 				variant="outlined"
-				/>
+			/>
 		</FormControl>
 	);
 }

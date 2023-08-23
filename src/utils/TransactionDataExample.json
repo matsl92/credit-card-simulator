@@ -1,0 +1,180 @@
+{
+    "cycles": [
+        {
+            "period": ["cycleStart", "cycleEnd"],
+            "transactions": [
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                },
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                },
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                },
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                }
+            ],
+            "subTotal": {
+                "paidCapital": 1200000,
+                "paidInterests": 200000,
+                "remainingCapital": 15000000,
+                "remainingInterests": 4000000
+            },
+            "cycleBill": {
+                "dueDate": "Date object",
+                "interestsFromPrevDebt": 1234,
+                "cycleInterests": 1234,
+                "addressableAmount": 1234,
+                "minimumPayment": 1234,
+                "carriedOverBalance": 1234,
+                "fullPayment": 1234
+
+            }
+        },
+        {
+            "period": ["cycleStart", "cycleEnd"],
+            "transactions": [
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                },
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                },
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                },
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                }
+            ],
+            "subTotal": {
+                "paidCapital": 1200000,
+                "paidInterests": 200000,
+                "remainingCapital": 15000000,
+                "remainingInterests": 4000000
+            },
+            "cycleBill": {
+                "dueDate": "Date object",
+                "interestsFromPrevDebt": 1234,
+                "cycleInterests": 1234,
+                "addressableAmount": 1234,
+                "minimumPayment": 1234,
+                "carriedOverBalance": 1234,
+                "fullPayment": 1234
+
+            }
+        },
+        {
+            "period": ["cycleStart", "cycleEnd"],
+            "transactions": [
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                },
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                },
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                },
+                {
+                    "date": "2023-08-23T19:16:14.230Z",
+                    "type": "purchase",
+                    "description": "Some purchase",
+                    "installments": 3,
+                    "interestRate": 3.1214,
+                    "amount": 1000000,
+                    "interestsToBePaid": 31214
+                }
+            ],
+            "subTotal": {
+                "paidCapital": 1200000,
+                "paidInterests": 200000,
+                "remainingCapital": 15000000,
+                "remainingInterests": 4000000
+            },
+            "cycleBill": {
+                "dueDate": "Date object",
+                "interestsFromPrevDebt": 1234,
+                "cycleInterests": 1234,
+                "addressableAmount": 1234,
+                "minimumPayment": 1234,
+                "carriedOverBalance": 1234,
+                "fullPayment": 1234
+
+            }
+        }
+    ],
+    "total": {
+        "paidCapital": 1234,
+        "paidInterests": 1234,
+        "totalPaid": 1234
+    }
+}

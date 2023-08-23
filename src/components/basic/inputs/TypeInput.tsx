@@ -1,15 +1,15 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
+import { useAppSelector, useAppDispatch } from '@src/redux/hooks';
+import { setType } from '@src/redux/features/form/formSlice';
 
 export default function TransactionTypeInput() {
-  const [type, setType] = useState('');
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setType(event.target.value);
-  };
+  const type = useAppSelector(state => state.form.type);
+  const dispatch = useAppDispatch();
 
   return (
     <FormControl sx={{ m: 1, width: '15ch' }} size="medium">
@@ -19,7 +19,7 @@ export default function TransactionTypeInput() {
         id="demo-select-small"
         value={type}
         label="Type"
-        onChange={handleChange}
+        onChange={e => dispatch(setType(e.target.value))}
         size="medium"
       >
         <MenuItem value="">

@@ -1,15 +1,22 @@
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { FormControl } from '@mui/material';
+import { useAppSelector, useAppDispatch } from '@src/redux/hooks';
+import { setDate } from '@src/redux/features/form/formSlice';
 
 function TransactionDateInput() {
+
+    const date = useAppSelector(state => state.form.date);
+    const dispatch = useAppDispatch();
+
     return (
         <FormControl
             sx={{ m: 1, width: '18ch' }}
             variant="outlined">
 		    <DatePicker
                 label="Date"
-                defaultValue={dayjs(new Date().toLocaleDateString())}
+                value={dayjs(date)}
+                onChange={newValue => dispatch(setDate(newValue?.toDate().toUTCString()))}
                 />
         </FormControl>
     )

@@ -1,5 +1,12 @@
 import { TextField, FormControl } from "@mui/material";
+import { useAppSelector, useAppDispatch } from "@src/redux/hooks";
+import { setDescription } from "@src/redux/features/form/formSlice";
+
 function TransactionDescriptionInput() {
+
+    const description = useAppSelector(state => state.form.description);
+    const dispatch = useAppDispatch();
+
     return (
         <FormControl sx={{ m: 1, width: '28ch' }}>
             <TextField
@@ -7,6 +14,8 @@ function TransactionDescriptionInput() {
             label="Description"
             multiline
             maxRows={4}
+            value={description}
+            onChange={e => dispatch(setDescription(e.target.value))}
             />
         </FormControl>
     )
