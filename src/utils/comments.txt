@@ -148,3 +148,53 @@ ACCESS REDUCER
 const dispatch = useDispatch();
 
 dispatch(setAmount(e.target.value));
+
+
+
+
+
+export interface TransactionBalanceInterface {
+    transactionDate: Date | string,
+    installments: { n: number, of: number},
+    paidCapital: number,
+    paidInterests: number,
+    remainingCapital: number,
+    remainingInterests: number
+}
+
+export interface CycleTransactionContainerInterface {
+    cycle: number,
+    cycleStart: Date | string,
+    cycleEnd: Date | string,
+    interestRate?: number,
+    transactionBalances: Array<TransactionBalanceInterface>
+}
+
+export interface SubtotalBarInterface {
+    paidCapital: number,
+    paidInterests: number,
+    remainingCapital: number,
+    remainingInterests: number
+}
+
+export interface CycleBillInterface {
+    dueDate: Date | string,
+    interestsFromPrevDebt: number,
+    cycleInterests: number,
+    addressableAmount: number,
+    minimumPayment: number,
+    carriedOverBalance: number,
+    fullPayment: number
+}
+
+interface CycleInterface extends 
+CycleTransactionContainerInterface,
+SubtotalBarInterface,
+CycleBillInterface {};
+
+export interface CycleContainerInterface {
+    cycles: Array<CycleInterface>
+};
+
+
+How would CycleContainerInterface look like?

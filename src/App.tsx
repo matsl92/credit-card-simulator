@@ -1,5 +1,5 @@
 import Container from '@mui/material/Container';
-import CycleTransactionBalanceContainer from '@components/complex/CycleTransactionBalanceContainer';
+// import CycleTransactionBalanceContainer from '@components/complex/CycleTransactionBalanceContainer';
 import TransactionContainer from '@components/complex/TransactionContainer';
 // import TotalBar from '@components/basic/TotalBar';
 // import CycleBill from '@components/basic/CycleBill';
@@ -9,6 +9,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Divider } from '@mui/material';
 import { useAppSelector } from "@src/redux/hooks";
 
+// import ExampleDisplayer from './utils/ExampleDisplayer';
+import exampleData from '@src/utils/TransactionDataExample.json';
+
+
+import CycleContainer from '@components/complex/CycleContainer';
 
 function App() {
 
@@ -22,7 +27,12 @@ function App() {
 
 				<Divider sx={{marginY: '20px'}}></Divider>
 
-				<CycleTransactionBalanceContainer 
+				{/* <ExampleDisplayer 
+				total={exampleData.total}
+				cycles={exampleData.cycles}
+				/> */}
+
+				{/* <CycleTransactionBalanceContainer 
 					cycle={1}
 					cycleStart={new Date()}
 					cycleEnd={new Date()}
@@ -52,7 +62,12 @@ function App() {
 							remainingCapital: 4000000,
 							remainingInterests: 200000
 						}
-					]}/>
+					]}/> */}
+
+				<CycleContainer 
+				cycles={exampleData.cycles}
+				/>
+				
 				
 				{/* <TotalBar 
 					paidCapital={19000000}

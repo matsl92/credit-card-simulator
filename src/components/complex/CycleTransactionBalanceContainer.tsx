@@ -4,21 +4,26 @@ import { Paper, Typography, Grid } from "@mui/material";
 import TableHeaders from "@components/basic/TableHeaders";
 import SubtotalBar from "@components/basic/SubtotalBar";
 
-interface CycleTransactionContainerInterface {
+export interface CycleTransactionContainerInterface {
     cycle: number,
-    cycleStart: Date,
-    cycleEnd: Date,
-    interestRate?: number,
+    cycleStart: Date | string,
+    cycleEnd: Date | string,
+    interestRate: number,
     transactionBalances: Array<TransactionBalanceInterface>
 }
 
 function CycleTransactionBalanceContainer({
     cycle,
-    cycleStart,
-    cycleEnd,
+    // cycleStart,
+    // cycleEnd,
     interestRate,
-    transactionBalances
+    transactionBalances,
+    ...rest
 }: CycleTransactionContainerInterface) {
+
+    let cycleStart = rest.cycleStart instanceof Date ? rest.cycleStart : new Date(rest.cycleStart);
+    let cycleEnd = rest.cycleEnd instanceof Date ? rest.cycleEnd : new Date(rest.cycleStart);
+
     return (
         <Paper elevation={2} sx={{
             width: '1050px', 
@@ -47,7 +52,7 @@ function CycleTransactionBalanceContainer({
                         justifyContent: 'end'
                         }}>
                     <Typography align="center">
-                        {interestRate?.toFixed(2)}%
+                        {interestRate.toFixed(2)}%
                     </Typography>
                 </Grid>
             </Grid>

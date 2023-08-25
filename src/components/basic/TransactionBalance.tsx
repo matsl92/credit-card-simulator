@@ -1,7 +1,7 @@
 import { Grid, Typography, Box } from "@mui/material"
 
 export interface TransactionBalanceInterface {
-    transactionDate: Date,
+    transactionDate: Date | string,
     installments: { n: number, of: number},
     paidCapital: number,
     paidInterests: number,
@@ -11,13 +11,16 @@ export interface TransactionBalanceInterface {
 
 function TransactionBalance(props: TransactionBalanceInterface) {
     const { 
-        transactionDate,
+        // transactionDate,
         installments: { n, of},
         paidCapital, 
         paidInterests, 
         remainingCapital, 
-        remainingInterests, 
+        remainingInterests,
+        ...rest 
     } = props;
+
+    let transactionDate = rest.transactionDate instanceof Date? rest.transactionDate : new Date(rest.transactionDate);
 
     return (
         <Grid container columns={16} sx={{
