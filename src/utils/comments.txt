@@ -1,5 +1,8 @@
 TO DO
 
+Must define what to do with the height of each cycle container
+Make a table with scroll
+
 Transaction container:
 
 	ADD button function:
@@ -83,9 +86,17 @@ General things I don't know where to put
 
 		
 
+NOTES
+
+Making the Balance table thinner make the columns look more aligned and better.
 
 
-Transition group for appearing transaction form
+SUGGESTIONS
+
+Total bar should have: 
+-endDate: when the debt would get paid in full.
+-maybe totalMonths or n/of based on the current date:
+
 
 
 

@@ -26,6 +26,7 @@ function CycleBill({
     return (
         <Paper elevation={2} sx={{
             maxWidth: '400px',
+            minWidth: '310px',
             borderRadius: '12px',
         }}>
             <Box padding={3}>

@@ -7,8 +7,11 @@ export interface TotalBarInterface {
 
 }
 
-function TotalBar(props: TotalBarInterface) {
-    const { paidCapital, paidInterests } = props;
+export default function TotalBar({
+    paidCapital,
+    paidInterests
+}: TotalBarInterface) {
+    // const { paidCapital, paidInterests } = props;
     return (
         <Paper onClick={() => console.log('Edit transaction')} elevation={2} sx={{
             width: '1000px', 
@@ -53,5 +56,3 @@ function TotalBar(props: TotalBarInterface) {
         </Paper>
     )
 }
-
-export default TotalBar;
