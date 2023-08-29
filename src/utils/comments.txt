@@ -1,5 +1,10 @@
 TO DO
 
+Change term carriedOverBalance Deferred amount:
+    The amounts that wont be adressed on this billing date but on later ones
+
+getNextCycle() resolves end for variant 0
+
 Must define what to do with the height of each cycle container
 Make a table with scroll
 
@@ -28,61 +33,109 @@ General things I don't know where to put
 		This madafaka starts by taking an array of transactions (maybe just the selected 
 		ones in our Transaction container instead of all of them)
 
-		Then, it must get all the values to be rendered and pass them to the corresponding
-		componenets
+		Then, it must get an object that aligns, conforms, and matches the interface 
+		OutlookInterface.
 
-		Values:
-
-			{
-				dicles: [
-					{
-						period: [cycleStart, cycleEnd],
-						transactions: [
-							transactionBalance1,
-							transactionBalance2
-						],
-						subTotal: SubtotalBar,
-						bill: {
-							dueDate: Date,
-							interestsFromPrevDebt: number,
-							cycleInterests: number,
-							addressableAmount: number,
-							minimumPayment: number,
-							carriedOverBalance: number,
-							fullPayment: number
-
-						}
-					},
-					{
-						period: [cycleStart, cycleEnd],
-						transactions: [
-							transactionBalance1,
-							transactionBalance2
-						],
-						subTotal: SubtotalBar,
-						bill: {
-							dueDate: Date,
-							interestsFromPrevDebt: number,
-							cycleInterests: number,
-							addressableAmount: number,
-							minimumPayment: number,
-							carriedOverBalance: number,
-							fullPayment: number
-
-						}
-					}
-				],
-				total: {
-					paidCapital: number,
-					paidInterests: number,
-					totalPaid: number
-				}
-			}
+		Finally, it passes the object to the Outlook component.
 	
 	getInterestsToPay(transaction):
 		this one will calculate the interests for a specific transaction.
 		divide amount by installments, itereate through each cycle and return
 		the insterests. the remainingCapital must be 0 at the end.
+
+
+----------------------------------------------------------------------------------------
+GET INTERESTS TO PAY
+
+Calculate interests from the purchase date.
+
+Divide the amount by the number of installments.
+
+for i in installments:
+	calculate month interests
+
+
+
+
+
+Things I need to calculate interests:
+
+	number of days from transactionDate or new cycle start to the next billing date
+
+
+interface Cycle {
+	dueDate: Date,
+	start: Date,
+	end: Date,
+	billingDate: Date,
+	variant: 0 | 1
+}
+
+let currentCycle: Cycle = {
+	dueDate: new Date(),
+	start: new Date(),
+	end: new Date(),
+	billingDate: new Date(),
+	variant: 0
+}
+
+function getNextCycle(currentCycle) {
+	if (!!currentCycle.variant) {
+		let dueDate = currentCycle.dueDate.
+		let start
+		let end
+		let billingDate
+	}
+}
+
+dayjs('2019-01-25').daysInMonth() // 31
+
+
+
+start 1,
+end 30
+dueDate end + 17
+
+start 15,
+end 14
+dueDate end + 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		
 
@@ -97,6 +150,8 @@ Total bar should have:
 -endDate: when the debt would get paid in full.
 -maybe totalMonths or n/of based on the current date:
 
+Page or section to see details about a Transaction, such as the amount to pay each 
+month for that specific transaction. That is, amount / installments + monthInterests.
 
 
 
