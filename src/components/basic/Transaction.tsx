@@ -6,7 +6,7 @@ export interface TransactionInterface {
     type: 'advance' | 'purchase' | 'payment' | 'other',
     description: string,
     installments: number,
-    interestRate?: number,
+    interestRate: number,
     amount: number,
     interestsToBePaid: number
 }
@@ -15,14 +15,15 @@ function Transaction({
     type,
     description,
     installments,
-    interestRate,
+    // interestRate,
     amount,
     interestsToBePaid,
     ...rest
 }: TransactionInterface) {
 
     let date = typeof rest.date === 'string' ? new Date(rest.date) : rest.date;
-
+    let interestRate = Number(rest.interestRate);
+    
     return (
         <Grid container columns={16} sx={{
             width: '95%',
@@ -52,7 +53,7 @@ function Transaction({
             </Grid>
             <Grid md={2} sm={2} lg={2} item>
                 <Box sx={{paddingX: '10px'}}>
-                    <Typography variant='body2' align='center'>{interestRate?.toFixed(2)}</Typography>
+                    <Typography variant='body2' align='center'>{interestRate.toFixed(2)}</Typography>
                 </Box>
             </Grid>
             <Grid md={2} sm={2} lg={2} item>

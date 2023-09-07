@@ -7,6 +7,19 @@ function TransactionInterestRateInput() {
     const interestRate = useAppSelector(state => state.form.interestRate);
     const dispatch = useAppDispatch();
 
+    function handleChange(value: string): string {
+        if (value === "") {
+            return "0";
+        }  else if (
+            value.at(0) === "0" && 
+            value.at(1) !== "." &&
+            value.at(1) !== undefined
+            ) {
+            return value.slice(1);
+        }
+        return value;
+    }
+
     return (
         <FormControl 
             sx={{ m: 1, width: '18ch' }} 
@@ -18,7 +31,7 @@ function TransactionInterestRateInput() {
             endAdornment={<InputAdornment position="end">%</InputAdornment>}
             label="Interest rate"
             value={interestRate}
-            onChange={e => dispatch(setInterestRate(e.target.value))}
+            onChange={e => dispatch(setInterestRate(handleChange(e.target.value)))}
             />
         </FormControl>
     )

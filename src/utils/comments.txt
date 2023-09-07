@@ -60,46 +60,155 @@ for i in installments:
 
 Things I need to calculate interests:
 
-	number of days from transactionDate or new cycle start to the next billing date
-
-
-interface Cycle {
-	dueDate: Date,
-	start: Date,
-	end: Date,
-	billingDate: Date,
-	variant: 0 | 1
-}
-
-let currentCycle: Cycle = {
-	dueDate: new Date(),
-	start: new Date(),
-	end: new Date(),
-	billingDate: new Date(),
-	variant: 0
-}
-
-function getNextCycle(currentCycle) {
-	if (!!currentCycle.variant) {
-		let dueDate = currentCycle.dueDate.
-		let start
-		let end
-		let billingDate
-	}
-}
-
-dayjs('2019-01-25').daysInMonth() // 31
+	days in cycle (nonetheless, it appears that days in debt are always divided by 30)
 
 
 
-start 1,
-end 30
-dueDate end + 17
 
-start 15,
-end 14
-dueDate end + 1
 
+
+
+
+
+
+
+FINANCE IDEAS AND THEORIES
+
+Month interests:
+    The calculated amount of interests which belong to a month.
+
+Deferred amount:
+    The amounts that wont be adressed on this billing date but on later ones
+
+addressable amount:
+    This amount is the addition of the installments to be paid the following
+    due date.
+
+
+cycle has grace period? true or false
+
+
+
+reality:
+
+    no carried over amount from previous cycle (I think)
+
+    Advance for COP 8,800,000 (24 installments) generated interests from the date 
+    it was made to the billing date over the whole amount.
+
+    Fee for COP 5,550 (1 installment) generated no interests.
+
+    minimum payment is equals to interests (advance interests) + addressable amount 
+    (1/24 advance + fee).
+
+    From this point we got two amounts; minimum payment and deferred amount. minimum
+    payment did not generated any interests on new cycle.
+
+    deferred amount generated interests from the first day of the cycle to the date 
+    the debt was paid in full.
+
+
+PROCESS TO CALCULATE INTERESTS
+
+if there is no grace period:
+
+    calculate interests over each payment from the purchase date to the billing 
+    date.
+
+    calculate interests over the previous cycle carried over amount from the first 
+    to the last day of the cycle.
+
+    get the minimum payment by adding these interests to the addressable amount.
+
+    from this point we have two amounts; minimum payment and deferred amount.
+
+
+if there is a grace period:
+
+    There should not be carried over amount from the previous cycle
+
+    calculate interests over each payment from the purchase date to the billing 
+    date. Excluding purchases to be paid in one installment (Those doesn't genarate 
+    interests at least when there's a grace period)
+
+    get the minimum payment by adding these interests to the addressable amount.
+
+    form this point we may have two amounts; minimum payment and maybe a deferred
+    amount.
+
+    I guess if the debt is paid in full before the due date, there won't be charges 
+    from the deffered amount even in this new cycle.
+
+
+if the grace period is going to be lost:
+
+    There should not be carried over amount from the previous cycle
+
+    calculate interests over each payment from the purchase date to the billing 
+    date. Excluding purchases to be paid in one installment (Those doesn't genarate 
+    interests at least when there's a grace period)
+
+    get the minimum payment by adding these interests to the addressable amount (I 
+    think this amount is not charged interests up to the due date.)
+
+    from this point we have two amounts; minimum payment and deferred amount.
+
+
+
+
+
+
+
+
+Theory (I think is already invalid since interests are geenerated over complete 
+amounts)
+
+if there is no grace period:
+
+    calculate interests over each payment from the purchase date to the billing 
+    date.
+
+    calculate interests over the previous cycle carried over amount from the first 
+    to the last day of the cycle.
+
+    get the minimum payment by adding these interests to the addressable amount.
+
+    from this point we have two amounts; minimum payment and deferred amount.
+
+
+if there is a grace period:
+
+    There should not be carried over amount from the previous cycle
+
+    calculate interests over the amount to be deferred of each purchase from the 
+    purchase date to the billing date.
+
+    get the minimum payment by adding these interests to the addressable amount.
+
+    form this point we may have two amounts; minimum payment and maybe a deferred
+    amount.
+
+    I guess if the debt is paid in full before the due date, there won't be charges 
+    from the deffered amount even in this new cycle.
+
+
+if the grace period is going to be lost:
+
+    There should not be carried over amount from the previous cycle
+
+    calculate interests over the amount to be deferred of each purchase from the 
+    purchase date to the billing date.
+
+    get the minimum payment by adding these interests to the addressable amount (I 
+    think this amount is not charged interests up to the due date.)
+
+    from this point we have two amounts; minimum payment and deferred amount.
+
+
+
+POSSIBLE IDEAS
+
+A grace period only applies for purchases and not advances
 
 
 

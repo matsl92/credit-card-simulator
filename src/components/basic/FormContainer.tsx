@@ -5,10 +5,12 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import SaveIcon from '@mui/icons-material/Save';
 import { 
 	Box,
-	Collapse,  
+	Collapse,
 	Button,
 } from '@mui/material';
 // import useFetchData from '@src/hooks/useFetchData';
+import { createTransaction } from '@src/utils/utils';
+import { TransactionInterface } from './Transaction';
 import { useAppSelector, useAppDispatch } from '@src/redux/hooks';
 import { insert } from '@src/redux/features/db/dbSlice';
 
@@ -22,7 +24,9 @@ function FormContainer() {
 
 	const dispatch = useAppDispatch();
 	
-	const formData = useAppSelector(state => state.form);
+	const formData: Omit<TransactionInterface, "interestsToBePaid"> = useAppSelector(state => state.form);
+
+	const transaction = createTransaction(formData);
 
 	return (
 		<Box sx={{
@@ -45,11 +49,12 @@ function FormContainer() {
 						variant='outlined'
 						onClick={() => {
 							dispatch(insert({
-								...formData,
-								interestRate: Number(formData.interestRate),
-								interestsToBePaid: 10,
-								date: new Date(formData.date).toISOString(),
-								type: formData.type as "purchase"
+								...transaction
+								// ...formData,
+								// interestRate: Number(formData.interestRate),
+								// interestsToBePaid: 10,
+								// date: new Date(formData.date).toISOString(),
+								// type: formData.type as "purchase"
 							}));
 							setExpanded(!expanded);
 						}}>

@@ -1,15 +1,16 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
+import { TransactionInterface } from "@components/basic/Transaction";
 dayjs.extend(utc);
 
 export class Transaction {
-    date: Date;
+    date: Date | string;
     type: 'advance' | 'purchase' | 'payment' | 'other';
     description: string;
     installments: number;
     interestRate: number;
     amount: number;
-    interestsToPay: number = 0;
+    interestsToBePaid: number = 0;
 
     constructor(
         date: Date | string,
@@ -25,144 +26,161 @@ export class Transaction {
         this.installments = installments;
         this.interestRate = interestRate;
         this.amount = amount;
-        this.interestsToPay = this.getInterestsToPay()
+        this.interestsToBePaid = this.getInterestsToBePaid()
     }
 
-    private getInterestsToPay() {
+    private getInterestsToBePaid() {
 
-        function getDefaultOrLast(current: Date, UTCDate: number) {
-            let nextBillingDate: dayjs.Dayjs;
-            // To get a dayjs object with the next month, the billingDate is transformed.
-            current.setUTCDate(1); // to ensure that n days in month won't get exceeded.
-            current.setUTCMonth(current.getUTCMonth() + 1);
-            let nextMonth = dayjs(current);
+        let variant0 = {
+            defaultStart: 30, // UTC
+            defaultBillingDate: 30,
+            defaultDueDate: 17 
+        };
 
-            if (UTCDate <= nextMonth.utc().endOf('month').date()) {
-                nextBillingDate = nextMonth.utc().date(UTCDate);
-            } else {
-                UTCDate = nextMonth.utc().endOf('month').date();
-                nextBillingDate = nextMonth.utc().date(UTCDate);
-            }
-
-            return nextBillingDate.toDate();
-        }
+        let variant1 = {
+            defaultStart: 15, // UTC
+            defaultBillingDate: 15,
+            defaultDueDate: 2 
+        };
 
         interface Cycle {
             start: Date,
             billingDate: Date,
-            dueDate: Date,
-            // end: Date,
-            variant: 0 | 1
+            dueDate: Date
         }
 
-        type Staff = {
-            name: string;
-            salary: number;
-            } 
-        type staffKeys = keyof Staff; // "name" | "salary";
-
-        let staff: staffKeys = "name"
-
-        console.log(staff);
-
-        function getNextCycle({
-            dueDate, 
-            start, 
-            // end, 
-            billingDate, 
-            variant
-        }: Cycle): Cycle {
-
-            //------------------------------------- start --------------------------------------------
-            // Same for both variants
-            start.setUTCMonth(start.getUTCMonth() + 1);
-
-
-            // ----------------------------------- billingDate ---------------------------------------
-            let nextEnd: dayjs.Dayjs;
-            if (variant === 1) {
-                nextEnd = dayjs(billingDate.setUTCMonth(billingDate.getUTCMonth() + 1));
+        function getDefaultOrLastOneMonthLater(current: Date, UTCDate: number) {
+            let currentCopy = new Date(current);
+            let defaultOrLastOneMonthLater: Date;
+            let currentMonthStart = new Date(currentCopy.setUTCDate(1));
+            let nextMonthStart = dayjs(currentMonthStart.setUTCMonth(currentMonthStart.getUTCMonth() + 1));
+        
+            if (UTCDate <= nextMonthStart.utc().endOf('month').date()) {
+                defaultOrLastOneMonthLater = nextMonthStart.utc().date(UTCDate).toDate();
             } else {
-                let billingDateUTCDate = billingDate.getUTCDate();
-                // To get a dayjs object with the next month, the billingDate is transformed.
-                billingDate.setUTCDate(1); // to ensure that n days in month won't get exceeded.
-                billingDate.setUTCMonth(billingDate.getUTCMonth() + 1);
-                let nextMonth = dayjs(billingDate);
-
-                if (billingDateUTCDate <= nextMonth.utc().endOf('month').date()) {
-                    nextEnd = nextMonth.utc().date(billingDateUTCDate);
-                } else {
-                    billingDateUTCDate = nextMonth.utc().endOf('month').date();
-                    nextEnd = nextMonth.utc().date(billingDateUTCDate);
-                }
+                UTCDate = nextMonthStart.utc().endOf('month').date();
+                defaultOrLastOneMonthLater = nextMonthStart.utc().date(UTCDate).toDate();
             }
-
+        
+            return defaultOrLastOneMonthLater;
+        }
+        
+        function getDefaultOrLast(current: Date, UTCDate: number) {
+            let currentCopy = new Date(current);
+            let defaultOrLast: dayjs.Dayjs;
+            // To get a dayjs object with the next month, the billingDate is transformed.
+            currentCopy.setUTCDate(1); // to ensure that n days in month won't get exceeded.
+            let currentMonth = dayjs(currentCopy);
+        
+            if (UTCDate <= currentMonth.utc().endOf('month').date()) {
+                defaultOrLast = currentMonth.utc().date(UTCDate);
+            } else {
+                UTCDate = currentMonth.utc().endOf('month').date();
+                defaultOrLast = currentMonth.utc().date(UTCDate);
+            }
+        
+            return defaultOrLast.toDate();
+        }
+        
+        function getCurrentCycle(transaction: Transaction, variant: 0 | 1): Cycle {
+            let { defaultStart, defaultBillingDate, defaultDueDate } = variant === 0 ? variant0 : variant1;
+            let purchaseDate = transaction.date instanceof Date ? 
+            transaction.date : 
+            new Date(transaction.date);
+        
+            //------------------------------------- start --------------------------------------------
+            let start;
+            let currentMonthStartDate = getDefaultOrLast(purchaseDate, defaultStart);
+            if (purchaseDate.getUTCDate() <= defaultBillingDate) {
+                start = new Date(currentMonthStartDate.setUTCMonth(currentMonthStartDate.getUTCMonth() - 1));
+            } else {
+                start = new Date(currentMonthStartDate);
+            }
+        
+            // ----------------------------------- billingDate ---------------------------------------
+            let billingDate = getDefaultOrLastOneMonthLater(start, defaultBillingDate);
+        
             //------------------------------------- dueDate ------------------------------------------
-            // I guess due dates are either in the middle of the month or at the beginning in which 
-            // case it's only necessary to increment the month. In case it is at the end of the month 
-            // for variant 1, we would have to get the end of the month.
-            dueDate.setUTCMonth(dueDate.getUTCMonth() + 1);
-            
-
-            billingDate.setUTCDate(billingDate.getUTCMonth() + 1);
-
-
+            // In case variant0's dueDate is in a different month than billingDate
+            let dueDate = getDefaultOrLastOneMonthLater(billingDate, defaultDueDate);
+            // In case variant1's dueDate is in the same month of the billingDate
+            // dueDate = getDefaultOrLast(billingDate, defaultDueDate);
+        
             return {
-                dueDate,
                 start,
-                // end: nextEnd.toDate(),
-                billingDate: nextEnd.toDate(),
-                variant
-            };
+                billingDate,
+                dueDate
+            }
         }
-
-        let fisrstDueDate = new Date(this.date.setUTCDate(17));
-        fisrstDueDate.setUTCMonth(fisrstDueDate.getUTCMonth() + 1);
-
-        let cycle: Cycle = {
-            start: new Date(this.date.setUTCDate(1)),
-            billingDate: getDefaultOrLast(this.date, 31),
-            dueDate: fisrstDueDate,
-            variant: 0
+        
+        function getNextCycle(currentCycle: Cycle, variant: 0 | 1): Cycle {
+            let { defaultStart, defaultBillingDate, defaultDueDate } = variant === 0 ? variant0 : variant1;
+            let { start, billingDate, dueDate } = currentCycle;
+                start = getDefaultOrLastOneMonthLater(start, defaultStart);
+                billingDate = getDefaultOrLastOneMonthLater(billingDate, defaultBillingDate);
+                dueDate = getDefaultOrLastOneMonthLater(dueDate, defaultDueDate);
+                
+                return {
+                    start,
+                    billingDate,
+                    dueDate
+                }
         }
-
-        let interestsToPay = 0;
+        
+        let interestsToBePaid = 0;
         let debt = this.amount;
-        let daysInMonth: number;
-        let monthDaysInDebt: number;
-        let monthInterests: number
-        // let currentCycle = this.date.getUTCMonth(); // actually I need the number of days in the month
+        let daysInCycle: number;
+        let cycleDaysInDebt: number;
+        let monthInterests: number;
+        let cycle = getCurrentCycle(this, 0);
+        
         for (let i = 1; i <= this.installments; i++) {
             let { start, billingDate } = cycle;
-            daysInMonth = dayjs(billingDate).diff(start, "days");
+            daysInCycle = dayjs(billingDate).diff(start, "days"); // Have to figure out how this 
+            // actually works. Sometimes is 30, sometimes is 31.
             if (i === 1) {
-                monthDaysInDebt = dayjs(this.date).diff(billingDate, "days");
+                cycleDaysInDebt = dayjs(billingDate).diff(this.date, "days") + 1;
             } else {
-                monthDaysInDebt = dayjs(start).diff(billingDate, "days");
+                cycleDaysInDebt = dayjs(billingDate).diff(start, "days") + 1;
             }
+            console.log("days in cycle: ", daysInCycle);
+            console.log("days in debt: ", cycleDaysInDebt);
 
-            monthInterests = debt * this.interestRate * monthDaysInDebt / daysInMonth;
-            interestsToPay += monthInterests;
+            monthInterests = debt * this.interestRate / 100 * cycleDaysInDebt / daysInCycle;
+            interestsToBePaid += monthInterests;
             debt -= this.amount / this.installments;
-            cycle = getNextCycle(cycle);
+            cycle = getNextCycle(cycle, 0);
         }
 
+        console.log("debt: ", debt);
+
         if (debt === 0) {
-            return interestsToPay;
+            return interestsToBePaid;
         } else {
-            console.log("debt did not get fully paid");
-            return interestsToPay;
+            console.log("debt is not 0");
+            return interestsToBePaid;
         }
     }
 }
 
-let creamPurchase = new Transaction(
-    new Date(), 
-    "purchase", 
-    "The thing I needed", 
-    3, 
-    3.1214, 
-    350000
-);
+interface TransactionJSON extends TransactionInterface {
+    date: string
+};
 
-console.log(creamPurchase);
+export function createTransaction({
+    date,
+    type,
+    description,
+    installments,
+    interestRate,
+    amount
+}: Omit<Transaction, "interestsToBePaid"> ): TransactionJSON {
+
+    let transaction = new Transaction(date, type, description, installments, interestRate, amount);
+    return {
+        ...transaction,
+        date: transaction.date instanceof Date?
+        transaction.date.toISOString() :
+        new Date(transaction.date).toISOString()
+    };
+}
