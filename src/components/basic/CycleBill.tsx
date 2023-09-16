@@ -6,7 +6,7 @@ export interface CycleBillInterface {
     cycleInterests: number,
     addressableAmount: number,
     minimumPayment: number,
-    carriedOverBalance: number,
+    deferredAmount: number,
     fullPayment: number
 }
 
@@ -16,7 +16,7 @@ function CycleBill({
     cycleInterests,
     addressableAmount,
     minimumPayment,
-    carriedOverBalance,
+    deferredAmount,
     fullPayment,
     ...rest
 }: CycleBillInterface) {
@@ -57,8 +57,8 @@ function CycleBill({
                         <Typography variant="body2">{Math.round(minimumPayment).toLocaleString()}</Typography>
                     </Stack>
                     <Stack direction='row' justifyContent='space-between'>
-                        <Typography variant="body2">Carried over balance: </Typography>
-                        <Typography variant="body2">{Math.round(carriedOverBalance).toLocaleString()}</Typography>
+                        <Typography variant="body2">Deferred amount: </Typography>
+                        <Typography variant="body2">{Math.round(deferredAmount).toLocaleString()}</Typography>
                     </Stack>
                     <Stack direction='row' justifyContent='space-between'>
                         <Typography variant="body2">Full payment: </Typography>

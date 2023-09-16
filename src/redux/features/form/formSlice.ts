@@ -16,8 +16,8 @@ const initialState: Omit<TransactionJSON, "interestsToBePaid"> = {
     type: 'purchase',
     description: '',
     installments: 1,
-    interestRate: 0,
-    amount: 75,
+    interestRate: 3.1214,
+    amount: 0,
 };
 
 const formSlice = createSlice({

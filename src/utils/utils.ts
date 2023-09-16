@@ -6,7 +6,7 @@ import { OutlookInterface } from "@components/complex/Outlook";
 import { TransactionBalanceInterface } from "@components/basic/TransactionBalance";
 dayjs.extend(utc);
 
-interface CycleDescriptor {
+export interface CycleDescriptor {
     start: Date,
     billingDate: Date,
     dueDate: Date
@@ -51,84 +51,6 @@ export class Transaction {
     }
 
     private getInterestsToBePaid() {
-
-        // function getDefaultOrLastOneMonthLater(current: Date, UTCDate: number) {
-        //     let currentCopy = new Date(current);
-        //     let defaultOrLastOneMonthLater: Date;
-        //     let currentMonthStart = new Date(currentCopy.setUTCDate(1));
-        //     let nextMonthStart = dayjs(currentMonthStart.setUTCMonth(currentMonthStart.getUTCMonth() + 1));
-        
-        //     if (UTCDate <= nextMonthStart.utc().endOf('month').date()) {
-        //         defaultOrLastOneMonthLater = nextMonthStart.utc().date(UTCDate).toDate();
-        //     } else {
-        //         UTCDate = nextMonthStart.utc().endOf('month').date();
-        //         defaultOrLastOneMonthLater = nextMonthStart.utc().date(UTCDate).toDate();
-        //     }
-        
-        //     return defaultOrLastOneMonthLater;
-        // }
-        
-        // function getDefaultOrLast(current: Date, UTCDate: number) {
-        //     let currentCopy = new Date(current);
-        //     let defaultOrLast: dayjs.Dayjs;
-        //     // To get a dayjs object with the next month, the billingDate is transformed.
-        //     currentCopy.setUTCDate(1); // to ensure that n days in month won't get exceeded.
-        //     let currentMonth = dayjs(currentCopy);
-        
-        //     if (UTCDate <= currentMonth.utc().endOf('month').date()) {
-        //         defaultOrLast = currentMonth.utc().date(UTCDate);
-        //     } else {
-        //         UTCDate = currentMonth.utc().endOf('month').date();
-        //         defaultOrLast = currentMonth.utc().date(UTCDate);
-        //     }
-        
-        //     return defaultOrLast.toDate();
-        // }
-        
-        // function getCurrentCycle(transaction: Transaction, variant: 0 | 1): CycleDescriptor {
-        //     let { defaultStart, defaultBillingDate, defaultDueDate } = variant === 0 ? variant0 : variant1;
-        //     let purchaseDate = transaction.date instanceof Date ? 
-        //     transaction.date : 
-        //     new Date(transaction.date);
-        
-        //     //------------------------------------- start --------------------------------------------
-        //     let start;
-        //     let currentMonthStartDate = getDefaultOrLast(purchaseDate, defaultStart);
-        //     if (purchaseDate.getUTCDate() <= defaultBillingDate) {
-        //         start = new Date(currentMonthStartDate.setUTCMonth(currentMonthStartDate.getUTCMonth() - 1));
-        //     } else {
-        //         start = new Date(currentMonthStartDate);
-        //     }
-        
-        //     // ----------------------------------- billingDate ---------------------------------------
-        //     let billingDate = getDefaultOrLastOneMonthLater(start, defaultBillingDate);
-        
-        //     //------------------------------------- dueDate ------------------------------------------
-        //     // In case variant0's dueDate is in a different month than billingDate
-        //     let dueDate = getDefaultOrLastOneMonthLater(billingDate, defaultDueDate);
-        //     // In case variant1's dueDate is in the same month of the billingDate
-        //     // dueDate = getDefaultOrLast(billingDate, defaultDueDate);
-        
-        //     return {
-        //         start,
-        //         billingDate,
-        //         dueDate
-        //     }
-        // }
-        
-        // function getNextCycle(currentCycle: CycleDescriptor, variant: 0 | 1): CycleDescriptor {
-        //     let { defaultStart, defaultBillingDate, defaultDueDate } = variant === 0 ? variant0 : variant1;
-        //     let { start, billingDate, dueDate } = currentCycle;
-        //         start = getDefaultOrLastOneMonthLater(start, defaultStart);
-        //         billingDate = getDefaultOrLastOneMonthLater(billingDate, defaultBillingDate);
-        //         dueDate = getDefaultOrLastOneMonthLater(dueDate, defaultDueDate);
-                
-        //         return {
-        //             start,
-        //             billingDate,
-        //             dueDate
-        //         }
-        // }
         
         let interestsToBePaid = 0;
         let debt = this.amount;
@@ -146,8 +68,8 @@ export class Transaction {
             } else {
                 cycleDaysInDebt = dayjs(billingDate).diff(start, "days") + 1;
             }
-            console.log("days in cycle: ", daysInCycle);
-            console.log("days in debt: ", cycleDaysInDebt);
+            // console.log("days in cycle: ", daysInCycle);
+            // console.log("days in debt: ", cycleDaysInDebt);
 
             monthInterests = debt * this.interestRate / 100 * cycleDaysInDebt / daysInCycle;
             interestsToBePaid += monthInterests;
@@ -155,12 +77,13 @@ export class Transaction {
             cycle = getNextCycleDescriptor(cycle, 0);
         }
 
-        console.log("debt: ", debt);
-
+        
         if (debt === 0) {
+            console.log("debt is 0");
             return interestsToBePaid;
         } else {
             console.log("debt is not 0");
+            console.log("debt: ", debt);
             return interestsToBePaid;
         }
     }
@@ -182,6 +105,7 @@ export function createTransaction({
     let transaction = new Transaction(date, type, description, installments, interestRate, amount);
     return {
         ...transaction,
+        interestRate: Number(transaction.interestRate),
         date: transaction.date instanceof Date?
         transaction.date.toISOString() :
         new Date(transaction.date).toISOString()
@@ -246,7 +170,7 @@ export function decomposeTransactionAndAddBalancesToOutlook(
                 cycleInMap.cycleBill.cycleInterests += cycleInterests;
                 cycleInMap.cycleBill.addressableAmount += addressableAmount;
                 cycleInMap.cycleBill.minimumPayment += addressableAmount + cycleInterests;
-                cycleInMap.cycleBill.carriedOverBalance += remainingCapital;
+                cycleInMap.cycleBill.deferredAmount += remainingCapital;
                 cycleInMap.cycleBill.fullPayment += addressableAmount + remainingCapital + cycleInterests;
 
                 // Modify total bar
@@ -273,7 +197,7 @@ export function decomposeTransactionAndAddBalancesToOutlook(
                     cycleInterests,
                     addressableAmount,
                     minimumPayment: addressableAmount + cycleInterests,
-                    carriedOverBalance: remainingCapital,
+                    deferredAmount: remainingCapital,
                     fullPayment: addressableAmount + remainingCapital + cycleInterests
                 }
             });

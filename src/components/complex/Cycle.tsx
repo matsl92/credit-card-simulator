@@ -90,11 +90,7 @@ let cycleEnd = rest.cycleEnd instanceof Date ? rest.cycleEnd : new Date(rest.cyc
                 })}
 
                 {/* SubtotalBar */}
-                <SubtotalBar 
-                paidCapital={1200000}
-                paidInterests={200000}
-                remainingCapital={15000000}
-                remainingInterests={4000000}/>
+                <SubtotalBar {...subtotalBar}/>
             </Paper>
 
             <CycleBill {...cycleBill}/>

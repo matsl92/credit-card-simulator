@@ -48,11 +48,6 @@ function FormContainer() {
 						onClick={() => {
 							dispatch(insert({
 								...transaction
-								// ...formData,
-								// interestRate: Number(formData.interestRate),
-								// interestsToBePaid: 10,
-								// date: new Date(formData.date).toISOString(),
-								// type: formData.type as "purchase"
 							}));
 							setExpanded(!expanded);
 						}}>

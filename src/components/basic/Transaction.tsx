@@ -15,7 +15,6 @@ function Transaction({
     type,
     description,
     installments,
-    // interestRate,
     amount,
     interestsToBePaid,
     ...rest

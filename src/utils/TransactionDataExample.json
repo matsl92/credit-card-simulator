@@ -51,7 +51,7 @@
                 "cycleInterests": 700000,
                 "addressableAmount": 900000,
                 "minimumPayment": 2100000,
-                "carriedOverBalance": 1400000,
+                "deferredAmount": 1400000,
                 "fullPayment": 6000000
             }
         },
@@ -106,7 +106,7 @@
                 "cycleInterests": 700000,
                 "addressableAmount": 900000,
                 "minimumPayment": 2100000,
-                "carriedOverBalance": 1400000,
+                "deferredAmount": 1400000,
                 "fullPayment": 6000000
             }
         }
