@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { TransactionInterface } from '@components/basic/Transaction';
+import { TransactionJSON } from '@src/utils/utils';
+// import { TransactionInterface } from '@components/basic/Transaction';
 
 // interface initialStateInterface {
 //     date: string,
@@ -10,7 +11,7 @@ import { TransactionInterface } from '@components/basic/Transaction';
 //     amount: number
 // }
 
-const initialState: Omit<TransactionInterface, "interestsToBePaid"> = {
+const initialState: Omit<TransactionJSON, "interestsToBePaid"> = {
     date: new Date().toISOString(),
     type: 'purchase',
     description: '',

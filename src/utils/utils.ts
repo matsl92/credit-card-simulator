@@ -1,10 +1,31 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 import { TransactionInterface } from "@components/basic/Transaction";
+import { CycleInterface } from "@components/complex/Cycle";
+import { OutlookInterface } from "@components/complex/Outlook";
+import { TransactionBalanceInterface } from "@components/basic/TransactionBalance";
 dayjs.extend(utc);
 
+interface CycleDescriptor {
+    start: Date,
+    billingDate: Date,
+    dueDate: Date
+}
+
+const variant0 = {
+    defaultStart: 30, // UTC
+    defaultBillingDate: 30,
+    defaultDueDate: 17 
+};
+
+const variant1 = {
+    defaultStart: 15, // UTC
+    defaultBillingDate: 15,
+    defaultDueDate: 2 
+};
+
 export class Transaction {
-    date: Date | string;
+    date: Date;
     type: 'advance' | 'purchase' | 'payment' | 'other';
     description: string;
     installments: number;
@@ -31,108 +52,90 @@ export class Transaction {
 
     private getInterestsToBePaid() {
 
-        let variant0 = {
-            defaultStart: 30, // UTC
-            defaultBillingDate: 30,
-            defaultDueDate: 17 
-        };
-
-        let variant1 = {
-            defaultStart: 15, // UTC
-            defaultBillingDate: 15,
-            defaultDueDate: 2 
-        };
-
-        interface Cycle {
-            start: Date,
-            billingDate: Date,
-            dueDate: Date
-        }
-
-        function getDefaultOrLastOneMonthLater(current: Date, UTCDate: number) {
-            let currentCopy = new Date(current);
-            let defaultOrLastOneMonthLater: Date;
-            let currentMonthStart = new Date(currentCopy.setUTCDate(1));
-            let nextMonthStart = dayjs(currentMonthStart.setUTCMonth(currentMonthStart.getUTCMonth() + 1));
+        // function getDefaultOrLastOneMonthLater(current: Date, UTCDate: number) {
+        //     let currentCopy = new Date(current);
+        //     let defaultOrLastOneMonthLater: Date;
+        //     let currentMonthStart = new Date(currentCopy.setUTCDate(1));
+        //     let nextMonthStart = dayjs(currentMonthStart.setUTCMonth(currentMonthStart.getUTCMonth() + 1));
         
-            if (UTCDate <= nextMonthStart.utc().endOf('month').date()) {
-                defaultOrLastOneMonthLater = nextMonthStart.utc().date(UTCDate).toDate();
-            } else {
-                UTCDate = nextMonthStart.utc().endOf('month').date();
-                defaultOrLastOneMonthLater = nextMonthStart.utc().date(UTCDate).toDate();
-            }
+        //     if (UTCDate <= nextMonthStart.utc().endOf('month').date()) {
+        //         defaultOrLastOneMonthLater = nextMonthStart.utc().date(UTCDate).toDate();
+        //     } else {
+        //         UTCDate = nextMonthStart.utc().endOf('month').date();
+        //         defaultOrLastOneMonthLater = nextMonthStart.utc().date(UTCDate).toDate();
+        //     }
         
-            return defaultOrLastOneMonthLater;
-        }
+        //     return defaultOrLastOneMonthLater;
+        // }
         
-        function getDefaultOrLast(current: Date, UTCDate: number) {
-            let currentCopy = new Date(current);
-            let defaultOrLast: dayjs.Dayjs;
-            // To get a dayjs object with the next month, the billingDate is transformed.
-            currentCopy.setUTCDate(1); // to ensure that n days in month won't get exceeded.
-            let currentMonth = dayjs(currentCopy);
+        // function getDefaultOrLast(current: Date, UTCDate: number) {
+        //     let currentCopy = new Date(current);
+        //     let defaultOrLast: dayjs.Dayjs;
+        //     // To get a dayjs object with the next month, the billingDate is transformed.
+        //     currentCopy.setUTCDate(1); // to ensure that n days in month won't get exceeded.
+        //     let currentMonth = dayjs(currentCopy);
         
-            if (UTCDate <= currentMonth.utc().endOf('month').date()) {
-                defaultOrLast = currentMonth.utc().date(UTCDate);
-            } else {
-                UTCDate = currentMonth.utc().endOf('month').date();
-                defaultOrLast = currentMonth.utc().date(UTCDate);
-            }
+        //     if (UTCDate <= currentMonth.utc().endOf('month').date()) {
+        //         defaultOrLast = currentMonth.utc().date(UTCDate);
+        //     } else {
+        //         UTCDate = currentMonth.utc().endOf('month').date();
+        //         defaultOrLast = currentMonth.utc().date(UTCDate);
+        //     }
         
-            return defaultOrLast.toDate();
-        }
+        //     return defaultOrLast.toDate();
+        // }
         
-        function getCurrentCycle(transaction: Transaction, variant: 0 | 1): Cycle {
-            let { defaultStart, defaultBillingDate, defaultDueDate } = variant === 0 ? variant0 : variant1;
-            let purchaseDate = transaction.date instanceof Date ? 
-            transaction.date : 
-            new Date(transaction.date);
+        // function getCurrentCycle(transaction: Transaction, variant: 0 | 1): CycleDescriptor {
+        //     let { defaultStart, defaultBillingDate, defaultDueDate } = variant === 0 ? variant0 : variant1;
+        //     let purchaseDate = transaction.date instanceof Date ? 
+        //     transaction.date : 
+        //     new Date(transaction.date);
         
-            //------------------------------------- start --------------------------------------------
-            let start;
-            let currentMonthStartDate = getDefaultOrLast(purchaseDate, defaultStart);
-            if (purchaseDate.getUTCDate() <= defaultBillingDate) {
-                start = new Date(currentMonthStartDate.setUTCMonth(currentMonthStartDate.getUTCMonth() - 1));
-            } else {
-                start = new Date(currentMonthStartDate);
-            }
+        //     //------------------------------------- start --------------------------------------------
+        //     let start;
+        //     let currentMonthStartDate = getDefaultOrLast(purchaseDate, defaultStart);
+        //     if (purchaseDate.getUTCDate() <= defaultBillingDate) {
+        //         start = new Date(currentMonthStartDate.setUTCMonth(currentMonthStartDate.getUTCMonth() - 1));
+        //     } else {
+        //         start = new Date(currentMonthStartDate);
+        //     }
         
-            // ----------------------------------- billingDate ---------------------------------------
-            let billingDate = getDefaultOrLastOneMonthLater(start, defaultBillingDate);
+        //     // ----------------------------------- billingDate ---------------------------------------
+        //     let billingDate = getDefaultOrLastOneMonthLater(start, defaultBillingDate);
         
-            //------------------------------------- dueDate ------------------------------------------
-            // In case variant0's dueDate is in a different month than billingDate
-            let dueDate = getDefaultOrLastOneMonthLater(billingDate, defaultDueDate);
-            // In case variant1's dueDate is in the same month of the billingDate
-            // dueDate = getDefaultOrLast(billingDate, defaultDueDate);
+        //     //------------------------------------- dueDate ------------------------------------------
+        //     // In case variant0's dueDate is in a different month than billingDate
+        //     let dueDate = getDefaultOrLastOneMonthLater(billingDate, defaultDueDate);
+        //     // In case variant1's dueDate is in the same month of the billingDate
+        //     // dueDate = getDefaultOrLast(billingDate, defaultDueDate);
         
-            return {
-                start,
-                billingDate,
-                dueDate
-            }
-        }
+        //     return {
+        //         start,
+        //         billingDate,
+        //         dueDate
+        //     }
+        // }
         
-        function getNextCycle(currentCycle: Cycle, variant: 0 | 1): Cycle {
-            let { defaultStart, defaultBillingDate, defaultDueDate } = variant === 0 ? variant0 : variant1;
-            let { start, billingDate, dueDate } = currentCycle;
-                start = getDefaultOrLastOneMonthLater(start, defaultStart);
-                billingDate = getDefaultOrLastOneMonthLater(billingDate, defaultBillingDate);
-                dueDate = getDefaultOrLastOneMonthLater(dueDate, defaultDueDate);
+        // function getNextCycle(currentCycle: CycleDescriptor, variant: 0 | 1): CycleDescriptor {
+        //     let { defaultStart, defaultBillingDate, defaultDueDate } = variant === 0 ? variant0 : variant1;
+        //     let { start, billingDate, dueDate } = currentCycle;
+        //         start = getDefaultOrLastOneMonthLater(start, defaultStart);
+        //         billingDate = getDefaultOrLastOneMonthLater(billingDate, defaultBillingDate);
+        //         dueDate = getDefaultOrLastOneMonthLater(dueDate, defaultDueDate);
                 
-                return {
-                    start,
-                    billingDate,
-                    dueDate
-                }
-        }
+        //         return {
+        //             start,
+        //             billingDate,
+        //             dueDate
+        //         }
+        // }
         
         let interestsToBePaid = 0;
         let debt = this.amount;
         let daysInCycle: number;
         let cycleDaysInDebt: number;
         let monthInterests: number;
-        let cycle = getCurrentCycle(this, 0);
+        let cycle = getCurrentCycleDescriptor(this, 0);
         
         for (let i = 1; i <= this.installments; i++) {
             let { start, billingDate } = cycle;
@@ -149,7 +152,7 @@ export class Transaction {
             monthInterests = debt * this.interestRate / 100 * cycleDaysInDebt / daysInCycle;
             interestsToBePaid += monthInterests;
             debt -= this.amount / this.installments;
-            cycle = getNextCycle(cycle, 0);
+            cycle = getNextCycleDescriptor(cycle, 0);
         }
 
         console.log("debt: ", debt);
@@ -163,7 +166,7 @@ export class Transaction {
     }
 }
 
-interface TransactionJSON extends TransactionInterface {
+export interface TransactionJSON extends TransactionInterface {
     date: string
 };
 
@@ -174,7 +177,7 @@ export function createTransaction({
     installments,
     interestRate,
     amount
-}: Omit<Transaction, "interestsToBePaid"> ): TransactionJSON {
+}: Omit<TransactionJSON, "interestsToBePaid"> ): TransactionJSON {
 
     let transaction = new Transaction(date, type, description, installments, interestRate, amount);
     return {
@@ -183,4 +186,216 @@ export function createTransaction({
         transaction.date.toISOString() :
         new Date(transaction.date).toISOString()
     };
+}
+
+export function decomposeTransactionAndAddBalancesToOutlook(
+    transaction: Transaction,
+    cycleMap: Map<CycleDescriptor, CycleInterface>, 
+    outlook: OutlookInterface
+): void {
+    let cycleDescriptor: CycleDescriptor = getCurrentCycleDescriptor(transaction, 0);
+    let cycleDaysInDebt: number;
+
+	let paidCapital = 0;
+	let paidInterests = 0;
+	let remainingCapital = transaction.amount;
+	let remainingInterests;
+
+	for (let installment = 1; installment <= transaction.installments; installment++) {
+
+		const { start, billingDate } = cycleDescriptor;
+		const daysInCycle = dayjs(billingDate).diff(start, "days");
+
+		if (installment === 1) {
+			cycleDaysInDebt = dayjs(billingDate).diff(transaction.date, "days") + 1;
+		} else {
+			cycleDaysInDebt = dayjs(billingDate).diff(start, "days") + 1;
+		}
+
+        const addressableAmount = transaction.amount / transaction.installments;
+		const cycleInterests = remainingCapital * transaction.interestRate / 100 * cycleDaysInDebt / daysInCycle;
+
+		paidCapital += addressableAmount;
+		paidInterests += cycleInterests;
+		remainingCapital = transaction.amount - paidCapital;
+		remainingInterests = transaction.interestsToBePaid - paidInterests;
+
+		const transactionBalance: TransactionBalanceInterface = {
+			transactionDate: new Date(transaction.date),
+			installments: { "n": installment, "of": transaction.installments},
+			paidCapital,
+			paidInterests,
+			remainingCapital,
+			remainingInterests
+		}
+
+		if (isCycleDescriptorInMap(cycleDescriptor, cycleMap)) {
+            const equivalentCycleDescriptor = getEquivalentOrSameCycleDescriptorForMap(cycleDescriptor, cycleMap);
+            const cycleInMap = cycleMap.get(equivalentCycleDescriptor);
+            
+            if ( cycleInMap ) {
+                cycleInMap.transactionBalances.push(transactionBalance);
+                cycleInMap.subtotalBar.paidCapital += paidCapital;
+                cycleInMap.subtotalBar.paidInterests += paidInterests;
+                cycleInMap.subtotalBar.remainingCapital += remainingCapital;
+                cycleInMap.subtotalBar.remainingInterests += remainingInterests;
+
+                // Also need to modify the cycle bill
+
+                // cycleInMap.cycleBill.interestsFromPrevDebt
+                cycleInMap.cycleBill.cycleInterests += cycleInterests;
+                cycleInMap.cycleBill.addressableAmount += addressableAmount;
+                cycleInMap.cycleBill.minimumPayment += addressableAmount + cycleInterests;
+                cycleInMap.cycleBill.carriedOverBalance += remainingCapital;
+                cycleInMap.cycleBill.fullPayment += addressableAmount + remainingCapital + cycleInterests;
+
+                // Modify total bar
+
+                
+            }
+
+		} else {
+			cycleMap.set(cycleDescriptor, {
+                cycle: 1,
+                cycleStart: cycleDescriptor.start,
+                cycleEnd: cycleDescriptor.billingDate,
+                interestRate: transaction.interestRate,
+                transactionBalances: [transactionBalance],
+                subtotalBar: {
+                    paidCapital,
+                    paidInterests,
+                    remainingCapital,
+                    remainingInterests
+                },
+                cycleBill: {
+                    dueDate: cycleDescriptor.dueDate,
+                    interestsFromPrevDebt: NaN, 
+                    cycleInterests,
+                    addressableAmount,
+                    minimumPayment: addressableAmount + cycleInterests,
+                    carriedOverBalance: remainingCapital,
+                    fullPayment: addressableAmount + remainingCapital + cycleInterests
+                }
+            });
+		}
+
+        // Modify total bar
+        outlook.totalBar.paidCapital += addressableAmount;
+        outlook.totalBar.paidInterests += cycleInterests;
+
+		cycleDescriptor = getNextCycleDescriptor(cycleDescriptor, 0)
+	}
+    outlook.cycles = Array.from(cycleMap.values());
+}
+
+function isCycleDescriptorInMap(cycleDescriptor: CycleDescriptor, map: Map<CycleDescriptor, CycleInterface>): boolean {
+    const candidateStart = new Date(cycleDescriptor.start);
+    let answear = false;
+    for (const key of map.keys()) {
+        const existingStart = new Date(key.start);
+        if (candidateStart.setUTCHours(0, 0, 0, 0) === existingStart.setUTCHours(0, 0, 0, 0)) {
+            answear = true;
+        }
+    }
+    return answear;
+}
+
+function getEquivalentOrSameCycleDescriptorForMap(
+    cycleDescriptor: CycleDescriptor, map: Map<CycleDescriptor, 
+    CycleInterface>
+): CycleDescriptor {
+    const sampleStart = new Date(cycleDescriptor.start);
+    for (const key of map.keys()) {
+        const existingStart = new Date(key.start);
+        if (sampleStart.setUTCHours(0, 0, 0, 0) === existingStart.setUTCHours(0, 0, 0, 0)) {
+            return key;
+        }
+    }
+    return cycleDescriptor
+}
+
+function getDefaultOrLastOneMonthLater(current: Date, UTCDate: number) {
+    let currentCopy = new Date(current);
+    let defaultOrLastOneMonthLater: Date;
+    let currentMonthStart = new Date(currentCopy.setUTCDate(1));
+    let nextMonthStart = dayjs(currentMonthStart.setUTCMonth(currentMonthStart.getUTCMonth() + 1));
+
+    if (UTCDate <= nextMonthStart.utc().endOf('month').date()) {
+        defaultOrLastOneMonthLater = nextMonthStart.utc().date(UTCDate).toDate();
+    } else {
+        UTCDate = nextMonthStart.utc().endOf('month').date();
+        defaultOrLastOneMonthLater = nextMonthStart.utc().date(UTCDate).toDate();
+    }
+
+    return defaultOrLastOneMonthLater;
+}
+
+function getDefaultOrLast(current: Date, UTCDate: number) {
+    let currentCopy = new Date(current);
+    let defaultOrLast: dayjs.Dayjs;
+    // To get a dayjs object with the next month, the billingDate is transformed.
+    currentCopy.setUTCDate(1); // to ensure that n days in month won't get exceeded.
+    let currentMonth = dayjs(currentCopy);
+
+    if (UTCDate <= currentMonth.utc().endOf('month').date()) {
+        defaultOrLast = currentMonth.utc().date(UTCDate);
+    } else {
+        UTCDate = currentMonth.utc().endOf('month').date();
+        defaultOrLast = currentMonth.utc().date(UTCDate);
+    }
+
+    return defaultOrLast.toDate();
+}
+
+function getCurrentCycleDescriptor(transaction: Transaction, variant: 0 | 1): CycleDescriptor {
+    let { defaultStart, defaultBillingDate, defaultDueDate } = variant === 0 ? variant0 : variant1;
+    let purchaseDate = transaction.date;
+
+    //------------------------------------- start --------------------------------------------
+    let start = transaction.date;
+    let currentMonthStartDate = getDefaultOrLast(start, defaultStart);
+    if (purchaseDate.getUTCDate() <= defaultBillingDate) {
+        start = new Date(currentMonthStartDate.setUTCMonth(currentMonthStartDate.getUTCMonth() - 1));
+    } else {
+        start = new Date(currentMonthStartDate);
+    }
+
+    // ----------------------------------- billingDate ---------------------------------------
+    let billingDate = getDefaultOrLastOneMonthLater(start, defaultBillingDate);
+
+    //------------------------------------- dueDate ------------------------------------------
+    // In case variant0's dueDate is in a different month than billingDate
+    let dueDate = getDefaultOrLastOneMonthLater(billingDate, defaultDueDate);
+    // In case variant1's dueDate is in the same month of the billingDate
+    // dueDate = getDefaultOrLast(billingDate, defaultDueDate);
+
+    return {
+        start,
+        billingDate,
+        dueDate
+    }
+}
+
+function getNextCycleDescriptor(currentCycle: CycleDescriptor, variant: 0 | 1): CycleDescriptor {
+    let { defaultStart, defaultBillingDate, defaultDueDate } = variant === 0 ? variant0 : variant1;
+    let { start, billingDate, dueDate } = currentCycle;
+        start = getDefaultOrLastOneMonthLater(start, defaultStart);
+        billingDate = getDefaultOrLastOneMonthLater(billingDate, defaultBillingDate);
+        dueDate = getDefaultOrLastOneMonthLater(dueDate, defaultDueDate);
+        
+        return {
+            start,
+            billingDate,
+            dueDate
+        }
+}
+
+export function enumerateCyclesInOutlook(outlook: OutlookInterface): void {
+    const { cycles } = outlook;
+    cycles.sort((a, b) => {
+        return new Date(a.cycleStart).getTime() - new Date(b.cycleStart).getTime();
+    })
+    for (let i = 0; i <cycles.length; i++) {
+        cycles[i].cycle = i+1;
+    }
 }

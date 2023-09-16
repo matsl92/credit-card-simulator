@@ -8,9 +8,7 @@ import {
 	Collapse,
 	Button,
 } from '@mui/material';
-// import useFetchData from '@src/hooks/useFetchData';
-import { createTransaction } from '@src/utils/utils';
-import { TransactionInterface } from './Transaction';
+import { createTransaction, TransactionJSON } from '@src/utils/utils';
 import { useAppSelector, useAppDispatch } from '@src/redux/hooks';
 import { insert } from '@src/redux/features/db/dbSlice';
 
@@ -24,7 +22,7 @@ function FormContainer() {
 
 	const dispatch = useAppDispatch();
 	
-	const formData: Omit<TransactionInterface, "interestsToBePaid"> = useAppSelector(state => state.form);
+	const formData: Omit<TransactionJSON, "interestsToBePaid"> = useAppSelector(state => state.form);
 
 	const transaction = createTransaction(formData);
 

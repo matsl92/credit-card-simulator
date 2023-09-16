@@ -1,9 +1,9 @@
 TO DO
 
-Change term carriedOverBalance Deferred amount:
+Change term carriedOverBalance to Deferred amount:
     The amounts that wont be adressed on this billing date but on later ones
 
-getNextCycle() resolves end for variant 0
+getNextCycle() resolve end for variant 0
 
 Must define what to do with the height of each cycle container
 Make a table with scroll
@@ -42,6 +42,158 @@ General things I don't know where to put
 		this one will calculate the interests for a specific transaction.
 		divide amount by installments, itereate through each cycle and return
 		the insterests. the remainingCapital must be 0 at the end.
+
+----------------------------------------------------------------------------------------
+GET OUTLOOK OBJECT
+
+cycles [
+	{
+		cycle,
+		cycleStart,
+		cycleEnd,
+		interestRate,
+		transactionBalances,
+		subtotalBar,
+		cycleBill
+	}
+]
+
+totalBar {
+	paidCapital,
+	paidInterests
+}
+
+CycleBillInterface {
+    dueDate: Date | string,
+    interestsFromPrevDebt: number,
+    cycleInterests: number,
+    addressableAmount: number,
+    minimumPayment: number,
+    carriedOverBalance: number,
+    fullPayment: number
+}
+
+cycleMap Map<Cycle, CycleInterface>
+
+Outlook = {
+	cycles [
+		{
+			cycle,
+			cycleStart,
+			cycleEnd,
+			interestRate,
+			transactionBalances,
+			subtotalBar,
+			cycleBill {
+				dueDate: Date | string,
+				interestsFromPrevDebt: number,
+				cycleInterests: number,
+				addressableAmount: number,
+				minimumPayment: number,
+				carriedOverBalance: number,
+				fullPayment: number
+			}
+		}
+	],
+	totalBar
+}
+
+function decomposeTransactionAndAddBalancesToOutlook {
+	for installment in installments:
+		TransactionBalance
+		TransactionBalance
+		TransactionBalance {
+			transactionDate: Date | string,
+			installments: { n: number, of: number},
+			paidCapital: number,
+			paidInterests: number,
+			remainingCapital: number,
+			remainingInterests: number
+		}
+
+		get or create cycle and add to cycle.transactionBalances
+		execute value addition to subtotalBar
+
+		cycleBill:
+			dueDate = cycle.dueDate
+			interestsFromPrevDebt = 
+			cycleInterests += cycleInterests
+			addressableAmount += paidCapital / installments.n
+			minimumPayment += addressableAmount + 
+			carriedOverBalance += remainingCapital
+			fullPayment += addressableAmount + remainingCapital + cycleInterests
+}
+
+
+CycleInterface {
+    cycle: number,
+    cycleStart: Date | string,
+    cycleEnd: Date | string,
+    interestRate: number,
+    transactionBalances: TransactionBalanceInterface[],
+    subtotalBar: SubtotalBarInterface,
+    cycleBill: CycleBillInterface
+}
+
+TotalBarInterface {
+    paidCapital: number,
+    paidInterests: number,
+}
+
+addTransactionBalancesToCycles(transaction: Transaction, cycles: Map): void {
+
+	let cycle = getCurrentCycle(transaction);
+
+	let paidCapital = 0;
+	let paidInterests = 0;
+	let remainingCapital;
+	let remainingInterests;
+
+	for (let installment = 1; i <= transaction.installments; i++) {
+
+		let { start, billingDate } = cycle;
+		let daysInCycle = dayjs(billingDate).diff(start, "days");
+
+		if (installment === 1) {
+			cycleDaysInDebt = dayjs(billingDate).diff(this.date, "days") + 1;
+		} else {
+			cycleDaysInDebt = dayjs(billingDate).diff(start, "days") + 1;
+		}
+
+		let cycleInterests = debt * Transaction.interestRate / 100 * cycleDaysInDebt / daysInCycle;
+
+		paidCapital += transaction.amount / transaction.installments;
+		paidInterests += cycleInterests;
+		remainingCapital = transaction.amount - paidCapital;
+		remainingInterests = transaction.interestsToBePaid - paidInterests;
+
+		const transactionBalance = {
+			transactionDate: transaction.date,
+			installments: { "n": installment, "of": transaction.installments},
+			paidCapital: paidCapital,
+			paidInterests: paidInterests,
+			remainingCapital: remainingCapital,
+			remainingInterests: remainingInterests
+		}
+
+		if (cycles.has(cycle)) {
+			cycles.get(cycle).push(transactionBalance);
+		} else {
+			cycles.set(cycle, [transactionBalance]);
+		}
+
+		cycle = getNextCycle(cycle, 0)
+	}
+}
+
+
+OBSERVATIONS ON FUNCTIONALITY
+
+remainingCapital and remainingInterests get to be really close to 0.
+	"remainingCapital":-2.9103830456733704e-11,
+	"remainingInterests":-1.8189894035458565e-12
+
+cycle bills stop referencing amounts that belong to transactions paid in full.
 
 
 ----------------------------------------------------------------------------------------
