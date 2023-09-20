@@ -45,7 +45,7 @@ export class Transaction {
         this.type = type;
         this.description = description;
         this.installments = installments;
-        this.interestRate = interestRate;
+        this.interestRate = Number(interestRate); // input for interestRate gets us a string
         this.amount = amount;
         this.interestsToBePaid = this.getInterestsToBePaid()
     }
@@ -93,22 +93,19 @@ export interface TransactionJSON extends TransactionInterface {
     date: string
 };
 
-export function createTransaction({
+export function serializeTransaction({
     date,
     type,
     description,
     installments,
     interestRate,
     amount
-}: Omit<TransactionJSON, "interestsToBePaid"> ): TransactionJSON {
+}: Transaction ): TransactionJSON {
 
     let transaction = new Transaction(date, type, description, installments, interestRate, amount);
     return {
         ...transaction,
-        interestRate: Number(transaction.interestRate),
-        date: transaction.date instanceof Date?
-        transaction.date.toISOString() :
-        new Date(transaction.date).toISOString()
+        date: date.toISOString()
     };
 }
 

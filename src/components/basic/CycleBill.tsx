@@ -11,7 +11,6 @@ export interface CycleBillInterface {
 }
 
 function CycleBill({
-    // dueDate,
     interestsFromPrevDebt,
     cycleInterests,
     addressableAmount,

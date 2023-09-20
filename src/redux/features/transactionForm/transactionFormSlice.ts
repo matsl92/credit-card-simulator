@@ -1,15 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TransactionJSON } from '@src/utils/utils';
-// import { TransactionInterface } from '@components/basic/Transaction';
-
-// interface initialStateInterface {
-//     date: string,
-//     type: 'advance' | 'purchase' | 'payment' | 'other',
-//     description: '',
-//     installments: number,
-//     interestRate: number,
-//     amount: number
-// }
 
 const initialState: Omit<TransactionJSON, "interestsToBePaid"> = {
     date: new Date().toISOString(),
@@ -20,8 +10,8 @@ const initialState: Omit<TransactionJSON, "interestsToBePaid"> = {
     amount: 0,
 };
 
-const formSlice = createSlice({
-    name: 'form',
+const transactionFormSlice = createSlice({
+    name: 'transactionForm',
     initialState,
     reducers: {
         setDate: (state, action) => {
@@ -45,5 +35,5 @@ const formSlice = createSlice({
     }
 });
 
-export const { setDate, setType, setDescription, setInstallments, setInterestRate, setAmount } = formSlice.actions;
-export default formSlice.reducer;
+export const { setDate, setType, setDescription, setInstallments, setInterestRate, setAmount } = transactionFormSlice.actions;
+export default transactionFormSlice.reducer;

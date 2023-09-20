@@ -1,14 +1,13 @@
-// import { useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useAppSelector, useAppDispatch } from '@src/redux/hooks';
-import { setType } from '@src/redux/features/form/formSlice';
+import { setType } from '@src/redux/features/transactionForm/transactionFormSlice';
 
 export default function TransactionTypeInput() {
 
-  const type = useAppSelector(state => state.form.type);
+  const type = useAppSelector(state => state.transactionForm.type);
   const dispatch = useAppDispatch();
 
   return (
@@ -23,7 +22,7 @@ export default function TransactionTypeInput() {
         size="medium"
       >
         <MenuItem value="">
-          <em>None</em>
+          {/* <em>None</em> */}
         </MenuItem>
         <MenuItem value="advance">Advance</MenuItem>
         <MenuItem value="purchase">Purchase</MenuItem>

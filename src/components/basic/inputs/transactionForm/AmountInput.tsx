@@ -3,7 +3,7 @@ import { NumericFormat, NumericFormatProps } from 'react-number-format';
 import TextField from '@mui/material/TextField';
 import { FormControl } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@src/redux/hooks';
-import { setAmount } from '@src/redux/features/form/formSlice';
+import { setAmount } from '@src/redux/features/transactionForm/transactionFormSlice';
 
 interface CustomProps {
 	onChange: (event: { target: { name: string; value: string } }) => void;
@@ -40,7 +40,7 @@ interface State {
 
 function TransactionAmountInput() {
 	const dispatch = useAppDispatch();
-	const amountFromRedux = useAppSelector((state) => state.form.amount); // Assuming the slice is named 'form'
+	const amountFromRedux = useAppSelector((state) => state.transactionForm.amount); // Assuming the slice is named 'transactionForm'
 
 	const [values, setValues] = React.useState<State>({
 		numberformat: amountFromRedux.toString(), // Convert the number to a string

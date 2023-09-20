@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
+import transactionFormReducer from '@src/redux/features/transactionForm/transactionFormSlice';
+import creditCardFormReducer from '@src/redux/features/creditCardForm/creditCardFormSlice';
 import counterReducer from '@redux/features/counter/counterSlice';
-import formReducer from '@redux/features/form/formSlice';
 import dbReducer from '@redux/features/db/dbSlice';
 
 export const store = configureStore({
     reducer: {
         counter: counterReducer,
-        form: formReducer,
+        transactionForm: transactionFormReducer,
+        creditCardForm: creditCardFormReducer,
         db: dbReducer,
     }
 });

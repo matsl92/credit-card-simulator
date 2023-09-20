@@ -1,10 +1,10 @@
 import { TextField, FormControl } from "@mui/material";
 import { useAppSelector, useAppDispatch } from "@src/redux/hooks";
-import { setDescription } from "@src/redux/features/form/formSlice";
+import { setDescription } from "@src/redux/features/transactionForm/transactionFormSlice";
 
 function TransactionDescriptionInput() {
 
-    const description = useAppSelector(state => state.form.description);
+    const description = useAppSelector(state => state.transactionForm.description);
     const dispatch = useAppDispatch();
 
     return (

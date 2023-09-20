@@ -1,8 +1,10 @@
 TO DO
 
-Improve logic in code: createTransaction, CycleDescriptor...
-
 Redefine app functionality, purpose, tools, 
+
+Look into the actual functionality behind interest charging
+
+Improve logic in code: createTransaction, CycleDescriptor...
 
 Must define what to do with the height of each cycle container
 Make a table with scroll
@@ -14,6 +16,58 @@ DONE
 
 Change term deferredAmount to Deferred amount:
     The amounts that wont be adressed on this billing date but on later ones
+
+
+APP SECTIONS AND FEATURES
+
+CRUDL for credit cards
+
+Page read credit card:
+    -Transaction container with sorted transactions
+    -Transaction form
+    -Outlook
+
+
+COMMENTS AND IDEAS
+
+Nice to include in transactionBalances:
+addressableAmount, cycleInterests, 
+
+use transaction description instead of date in transactionBalances
+
+
+FUTURE FEATURES
+
+Create credit card
+
+Credit card customization:
+
+	select the variant
+
+	Do you have grace periods? can you lose them?
+
+	Do interests get charged from purchase date?
+
+Add transaction
+
+Visualize credit Card with transactions and outlook
+
+Transactions could be unselected (Maybe you want to see the behavior of one 
+transaction that is not yours)
+
+Transactions added in this section won't require to specify the credit card 
+they belong to.
+
+
+BACKEND
+
+User registration and login formSlice
+
+Endpoints for user objects:
+	
+	credit cards (POST, PUT, DELETE, UPDATE)
+
+	transactions (POST, PUT, DELETE, UPDATE) 
 
 
 SKETCHES

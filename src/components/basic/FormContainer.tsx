@@ -8,9 +8,10 @@ import {
 	Collapse,
 	Button,
 } from '@mui/material';
-import { createTransaction, TransactionJSON } from '@src/utils/utils';
+import { serializeTransaction, TransactionJSON } from '@src/utils/utils';
 import { useAppSelector, useAppDispatch } from '@src/redux/hooks';
 import { insert } from '@src/redux/features/db/dbSlice';
+import { Transaction } from '@src/utils/utils';
 
 function FormContainer() {
 	
@@ -22,9 +23,18 @@ function FormContainer() {
 
 	const dispatch = useAppDispatch();
 	
-	const formData: Omit<TransactionJSON, "interestsToBePaid"> = useAppSelector(state => state.form);
+	const formData: Omit<TransactionJSON, "interestsToBePaid"> = useAppSelector(state => state.transactionForm);
 
-	const transaction = createTransaction(formData);
+	const transaction = new Transaction(
+		formData.date,
+		formData.type,
+		formData.description,
+		formData.installments,
+		formData.interestRate,
+		formData.amount
+	);
+
+	const serializedTransaction = serializeTransaction(transaction);
 
 	return (
 		<Box sx={{
@@ -47,7 +57,7 @@ function FormContainer() {
 						variant='outlined'
 						onClick={() => {
 							dispatch(insert({
-								...transaction
+								...serializedTransaction
 							}));
 							setExpanded(!expanded);
 						}}>

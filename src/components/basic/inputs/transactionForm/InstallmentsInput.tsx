@@ -5,12 +5,12 @@ import { OutlinedInput } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { useAppSelector, useAppDispatch } from '@src/redux/hooks';
-import { setInstallments } from '@src/redux/features/form/formSlice';
+import { setInstallments } from '@src/redux/features/transactionForm/transactionFormSlice';
 
 
 function TransactionInstallmentsInput() {
 
-  const amount = useAppSelector((state) => state.form.installments);
+  const amount = useAppSelector((state) => state.transactionForm.installments);
   const dispatch = useAppDispatch();
 
   return (

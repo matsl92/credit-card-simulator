@@ -1,10 +1,10 @@
 import { FormControl, InputLabel, InputAdornment, OutlinedInput } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@src/redux/hooks";
-import { setInterestRate } from "@src/redux/features/form/formSlice";
+import { setInterestRate } from "@src/redux/features/transactionForm/transactionFormSlice";
 
-function TransactionInterestRateInput() {
+function CreditCardInterestRateInput() {
 
-    const interestRate = useAppSelector(state => state.form.interestRate);
+    const interestRate = useAppSelector(state => state.transactionForm.interestRate);
     const dispatch = useAppDispatch();
 
     function handleChange(value: string): string {
@@ -37,5 +37,5 @@ function TransactionInterestRateInput() {
     )
 }
 
-export default TransactionInterestRateInput;
+export default CreditCardInterestRateInput;
 

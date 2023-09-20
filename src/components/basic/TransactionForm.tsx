@@ -1,9 +1,9 @@
-import TransactionTypeInput from "@components/basic/inputs/TypeInput";
-import TransactionDateInput from "@components/basic/inputs/DateInput";
-import TransactionDescriptionInput from "@components/basic/inputs/DescriptionInput";
-import TransactionInstallmentsInput from "@components/basic/inputs/InstallmentsInput";
-import TransactionInterestRateInput from "@components/basic/inputs/InterestRateInput";
-import TransactionAmountInput from "@components/basic/inputs/AmountInput";
+import TransactionTypeInput from "@components/basic/inputs/transactionForm/TypeInput";
+import TransactionDateInput from "@components/basic/inputs/transactionForm/DateInput";
+import TransactionDescriptionInput from "@components/basic/inputs/transactionForm/DescriptionInput";
+import TransactionInstallmentsInput from "@components/basic/inputs/transactionForm/InstallmentsInput";
+import CreditCardInterestRateInput from "@components/basic/inputs/creditCardForm/InterestRateInput";
+import TransactionAmountInput from "@components/basic/inputs/transactionForm/AmountInput";
 
 export function TransactionForm() {
 
@@ -13,7 +13,7 @@ export function TransactionForm() {
             <TransactionTypeInput />
             <TransactionDescriptionInput />
             <TransactionInstallmentsInput />
-            <TransactionInterestRateInput />
+            <CreditCardInterestRateInput />
             <TransactionAmountInput />
         </form>
     )
